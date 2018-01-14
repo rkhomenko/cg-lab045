@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
-project(cg-lab03 VERSION 0.1.0 LANGUAGES C CXX)
+project(cg-lab045 VERSION 0.1.0 LANGUAGES C CXX)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
    "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

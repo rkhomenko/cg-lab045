@@ -1,4 +1,4 @@
-// Computer graphic lab 3
+// Computer graphic lab 4-5
 // Variant 20
 // Copyright © 2017-2018 Roman Khomenko (8O-308)
 // All rights reserved
@@ -20,7 +20,7 @@ public:
     ~MyMainWindow() = default;
 
     static constexpr auto VARIANT_DESCRIPTION =
-        "Computer grapics lab 3\n"
+        "Computer grapics lab 4-5\n"
         "Variant 20: ellipsoid layer\n"
         "Made by Roman Khomenko (8O-308)";
 
