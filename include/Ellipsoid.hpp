@@ -89,7 +89,7 @@ private:
                           LenghtType h,
                           SizeType n,
                           LenghtType deltaH,
-                          const Mat4x4& transformMatrix,
+                          const Mat4x4& rotateMatrix,
                           const Vec3& viewPoint,
                           const Lighting& lighting);
     void GenerateVertices(LenghtType a,
@@ -97,11 +97,14 @@ private:
                           LenghtType c,
                           LenghtType h,
                           SizeType n,
-                          const Mat4x4& transformMatrix,
+                          const Mat4x4& rotateMatrix,
                           const Vec3& viewPoint,
                           const Lighting& lighting);
 
     static Vec3 ToVec3(const Vec4& vec) { return Vec3(vec[0], vec[1], vec[2]); }
+    static Vec4 ToVec4(const Vec3& vec) {
+        return Vec4(vec[0], vec[1], vec[2], 1);
+    }
     static Vec3 GetNormal(const Vec4& first,
                           const Vec4& middle,
                           const Vec4& last);

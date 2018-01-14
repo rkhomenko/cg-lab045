@@ -74,7 +74,7 @@ void Layer::GenerateVertices(LenghtType a,
                              LenghtType h,
                              SizeType n,
                              LenghtType deltaH,
-                             const Mat4x4& transformMatrix,
+                             const Mat4x4& rotateMatrix,
                              const Vec3& viewPoint,
                              const Lighting& lighting) {
     const auto DELTA_PHI = 2 * PI / n;
@@ -87,41 +87,26 @@ void Layer::GenerateVertices(LenghtType a,
                       h);
     };
 
-    const auto BLUE = Vec4(0, 0, 1, 1);
-    Vec4 color = BLUE;
-
     for (auto i = 0UL; i < n; i++) {
-        auto first = generateVertex(i, h).GetPosition() * transformMatrix;
+        auto first = generateVertex(i, h).GetPosition() * rotateMatrix;
         auto second =
-            generateVertex(i, h + deltaH).GetPosition() * transformMatrix;
-        auto third = generateVertex(i + 1, h).GetPosition() * transformMatrix;
+            generateVertex(i, h + deltaH).GetPosition() * rotateMatrix;
+        auto third = generateVertex(i + 1, h).GetPosition() * rotateMatrix;
         auto fourth =
-            generateVertex(i + 1, h + deltaH).GetPosition() * transformMatrix;
+            generateVertex(i + 1, h + deltaH).GetPosition() * rotateMatrix;
 
         Vec3 normal = GetNormal(first, second, third);
         if (CheckNormal(normal, viewPoint)) {
-            Vertices.emplace_back(
-                first,
-                lighting.Calculate(ToVec3(first), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                second,
-                lighting.Calculate(ToVec3(second), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                third,
-                lighting.Calculate(ToVec3(third), normal, ToVec3(color)));
+            Vertices.emplace_back(first, ToVec4(normal));
+            Vertices.emplace_back(second, ToVec4(normal));
+            Vertices.emplace_back(third, ToVec4(normal));
         }
 
         normal = GetNormal(second, fourth, third);
         if (CheckNormal(normal, viewPoint)) {
-            Vertices.emplace_back(
-                second,
-                lighting.Calculate(ToVec3(second), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                fourth,
-                lighting.Calculate(ToVec3(fourth), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                third,
-                lighting.Calculate(ToVec3(third), normal, ToVec3(color)));
+            Vertices.emplace_back(second, ToVec4(normal));
+            Vertices.emplace_back(fourth, ToVec4(normal));
+            Vertices.emplace_back(third, ToVec4(normal));
         }
     }
 }
@@ -131,7 +116,7 @@ void Layer::GenerateVertices(LenghtType a,
                              LenghtType c,
                              LenghtType h,
                              SizeType n,
-                             const Mat4x4& transformMatrix,
+                             const Mat4x4& rotateMatrix,
                              const Vec3& viewPoint,
                              const Lighting& lighting) {
     const auto DELTA_PHI = 2 * PI / n;
@@ -144,25 +129,17 @@ void Layer::GenerateVertices(LenghtType a,
                       h);
     };
 
-    const auto BLUE = Vec4(0, 0, 1, 1);
-    const Vec4 center = Vec4(0, 0, h, 1) * transformMatrix;
-    auto color = BLUE;
+    const Vec4 center = Vec4(0, 0, h, 1) * rotateMatrix;
 
     for (auto i = 0UL; i < n; i++) {
-        auto first = generateVertex(i, h).GetPosition() * transformMatrix;
-        auto second = generateVertex(i + 1, h).GetPosition() * transformMatrix;
+        auto first = generateVertex(i, h).GetPosition() * rotateMatrix;
+        auto second = generateVertex(i + 1, h).GetPosition() * rotateMatrix;
 
         Vec3 normal = GetNormal(first, center, second);
         if (CheckNormal(normal, viewPoint)) {
-            Vertices.emplace_back(
-                first,
-                lighting.Calculate(ToVec3(first), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                center,
-                lighting.Calculate(ToVec3(center), normal, ToVec3(color)));
-            Vertices.emplace_back(
-                second,
-                lighting.Calculate(ToVec3(second), normal, ToVec3(color)));
+            Vertices.emplace_back(first, ToVec4(normal));
+            Vertices.emplace_back(center, ToVec4(normal));
+            Vertices.emplace_back(second, ToVec4(normal));
         }
     }
 }
@@ -205,6 +182,7 @@ Ellipsoid::Ellipsoid(LenghtType a,
       ViewPoint{viewPoint} {}
 
 LayerVector Ellipsoid::GenerateVertices(const Mat4x4& rotateMatrix,
+
                                         const Lighting& lighting) const {
     LayerVector layers;
     float start = -0.1f;
