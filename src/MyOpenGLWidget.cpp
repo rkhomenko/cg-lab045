@@ -34,9 +34,9 @@ MyOpenGLWidget::MyOpenGLWidget(LenghtType a,
       AngleOX{0.0},
       AngleOY{0.0},
       AngleOZ{0.0},
-      AmbientCoeff{0.5},
-      SpecularCoeff{0.5},
-      DiffuseCoeff{0.5},
+      AmbientCoeff{0.2},
+      SpecularCoeff{0.2},
+      DiffuseCoeff{0.3},
       A{a},
       B{b},
       C{c},
@@ -253,14 +253,13 @@ void MyOpenGLWidget::UpdateOnChange(int width, int height) {
     const Mat4x4 scaleMatrix = GenerateScaleMatrix(width, height);
     const Mat4x4 transformMatrix = scaleMatrix * projectionMatrix;
 
-    Vec3 light = Vec3(1, 0, 0);
-    Vec3 toObserver = Vec3(0, 0, 1);
-    Lighting lighting = {AmbientCoeff, SpecularCoeff, DiffuseCoeff, light,
-                         toObserver};
     EllipsoidLayer.SetVertexCount(VertexCount);
     EllipsoidLayer.SetSurfaceCount(SurfaceCount);
-    Layers = EllipsoidLayer.GenerateVertices(rotateMatrix, lighting);
+    Layers = EllipsoidLayer.GenerateVertices(rotateMatrix);
     SetUniformMatrix(transformMatrix);
+    SetUniformValue(AMBIENT_COEFF, AmbientCoeff);
+    SetUniformValue(DIFFUSE_COEFF, DiffuseCoeff);
+    SetUniformValue(SPECULAR_COEFF, SpecularCoeff);
 }
 
 void MyOpenGLWidget::OnWidgetUpdate() {
@@ -406,3 +405,10 @@ void MyOpenGLWidget::SetUniformMatrix(const Mat4x4& transformMatrix) {
                                    QMatrix4x4(transformMatrix.data()));
     ShaderProgram->release();
 }
+
+void MyOpenGLWidget::SetUniformValue(const char* name, float value) {
+    ShaderProgram->bind();
+    ShaderProgram->setUniformValue(name, value);
+    ShaderProgram->release();
+}
+

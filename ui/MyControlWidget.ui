@@ -625,7 +625,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>0.5</string>
+            <string>0.2</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -635,7 +635,7 @@
          <item>
           <widget class="QLineEdit" name="specularLineEdit">
            <property name="text">
-            <string>0.5</string>
+            <string>0.2</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -645,7 +645,7 @@
          <item>
           <widget class="QLineEdit" name="diffuseLineEdit">
            <property name="text">
-            <string>0.5</string>
+            <string>0.3</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

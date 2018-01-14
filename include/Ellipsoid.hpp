@@ -26,32 +26,6 @@ using SizeType = std::size_t;
 using LenghtType = float;
 using VertexVector = std::vector<Vertex>;
 
-class Lighting {
-public:
-    Lighting(float ambientCoeff,
-             float specularCoeff,
-             float diffuseCoeff,
-             const Vec3& light,
-             const Vec3& toObserverVec)
-        : AmbientCoeff{ambientCoeff},
-          SpecularCoeff{specularCoeff},
-          DiffuseCoeff{diffuseCoeff},
-          Light{light},
-          ToObserverVec{toObserverVec} {}
-
-    Vec4 Calculate(const Vec3& point,
-                   const Vec3& normal,
-                   const Vec3& color) const;
-
-private:
-    float AmbientCoeff;
-    float SpecularCoeff;
-    float DiffuseCoeff;
-
-    Vec3 Light;
-    Vec3 ToObserverVec;
-};
-
 class Layer {
 public:
     enum class LayerType { SIDE, BOTTOM };
@@ -64,16 +38,14 @@ public:
           SizeType n,
           LenghtType deltaH,
           const Mat4x4& transformMatrix,
-          const Vec3& viewPoint,
-          const Lighting& lighting);
+          const Vec3& viewPoint);
     Layer(LenghtType a,
           LenghtType b,
           LenghtType c,
           LenghtType h,
           SizeType n,
           const Mat4x4& transformMatrix,
-          const Vec3& viewPoint,
-          const Lighting& lighting);
+          const Vec3& viewPoint);
 
     const VertexVector& GetVertices() const;
     SizeType GetItemsCount() const;
@@ -90,16 +62,14 @@ private:
                           SizeType n,
                           LenghtType deltaH,
                           const Mat4x4& rotateMatrix,
-                          const Vec3& viewPoint,
-                          const Lighting& lighting);
+                          const Vec3& viewPoint);
     void GenerateVertices(LenghtType a,
                           LenghtType b,
                           LenghtType c,
                           LenghtType h,
                           SizeType n,
                           const Mat4x4& rotateMatrix,
-                          const Vec3& viewPoint,
-                          const Lighting& lighting);
+                          const Vec3& viewPoint);
 
     static Vec3 ToVec3(const Vec4& vec) { return Vec3(vec[0], vec[1], vec[2]); }
     static Vec4 ToVec4(const Vec3& vec) {
@@ -127,8 +97,7 @@ public:
               const Vec3& viewPoint);
 
     SizeType GetVertexCount() const;
-    LayerVector GenerateVertices(const Mat4x4& rotateMatrix,
-                                 const Lighting& lighting) const;
+    LayerVector GenerateVertices(const Mat4x4& rotateMatrix) const;
 
     void SetVertexCount(SizeType count);
     void SetSurfaceCount(SizeType count);

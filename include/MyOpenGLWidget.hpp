@@ -66,6 +66,9 @@ private:
     static constexpr auto POSITION = "position";
     static constexpr auto COLOR = "color";
     static constexpr auto TRANSFORM_MATRIX = "transformMatrix";
+    static constexpr auto AMBIENT_COEFF = "ambientCoeff";
+    static constexpr auto DIFFUSE_COEFF = "diffuseCoeff";
+    static constexpr auto SPECULAR_COEFF = "specularCoeff";
 
     static constexpr auto SCALE_FACTOR_PER_ONCE = 1.15f;
 
@@ -78,6 +81,7 @@ private:
     Mat4x4 GenerateRotateMatrix(RotateType rotateType) const;
 
     void SetUniformMatrix(const Mat4x4& transformMatrix);
+    void SetUniformValue(const char* name, float value);
 
     static Mat4x4 GenerateRotateMatrixByAngle(RotateType rotateType,
                                               FloatType angle);

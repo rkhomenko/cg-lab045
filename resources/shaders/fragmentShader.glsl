@@ -8,14 +8,14 @@
 varying highp vec4 normal;
 varying highp vec4 point;
 
-uniform float ambientCoeff = 0.5f;
-uniform float diffuseCoeff = 0.5f;
-uniform float specularCoeff = 0.5f;
+uniform highp float ambientCoeff;
+uniform highp float diffuseCoeff;
+uniform highp float specularCoeff;
 uniform highp vec3 light = vec3(0, 0, 1);
 uniform highp vec3 toObserverVec = vec3(0, 0, 1);
 
-const vec3 color = vec3(0.0f, 0.0f, 1.0f);
-const float shineCoeff = 10;
+const highp vec3 color = vec3(0.0f, 0.0f, 1.0f);
+const highp float shineCoeff = 1.0f;
 
 void main() {
     vec3 point3 = point.xyz;

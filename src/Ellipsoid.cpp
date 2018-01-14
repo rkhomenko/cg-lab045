@@ -7,24 +7,6 @@
 
 const float Layer::PI = 4 * std::atan(1.0f);
 
-Vec4 Lighting::Calculate(const Vec3& point,
-                         const Vec3& normal,
-                         const Vec3& color) const {
-    Vec3 ambientI = AmbientCoeff * color;
-    Vec3 fromPointToLightVec = Light - point;
-    Vec3 diffuseI =
-        DiffuseCoeff * std::max(fromPointToLightVec.dot(normal), 0.0f) * color;
-    float shineCoeff = 10;
-    Vec3 reflectedLightVec =
-        2 * normal.dot(fromPointToLightVec) * normal - fromPointToLightVec;
-    Vec3 specularI =
-        SpecularCoeff *
-        std::pow(reflectedLightVec.dot(ToObserverVec), shineCoeff) * color;
-
-    Vec3 sum = ambientI + diffuseI + specularI;
-    return Vec4(sum[0], sum[1], sum[2], 1);
-}
-
 Layer::Layer(LenghtType a,
              LenghtType b,
              LenghtType c,
@@ -32,11 +14,9 @@ Layer::Layer(LenghtType a,
              SizeType n,
              LenghtType deltaH,
              const Mat4x4& transformMatrix,
-             const Vec3& viewPoint,
-             const Lighting& lighting)
+             const Vec3& viewPoint)
     : Type{LayerType::SIDE} {
-    GenerateVertices(a, b, c, h, n, deltaH, transformMatrix, viewPoint,
-                     lighting);
+    GenerateVertices(a, b, c, h, n, deltaH, transformMatrix, viewPoint);
 }
 
 Layer::Layer(LenghtType a,
@@ -45,10 +25,9 @@ Layer::Layer(LenghtType a,
              LenghtType h,
              SizeType n,
              const Mat4x4& transformMatrix,
-             const Vec3& viewPoint,
-             const Lighting& lighting)
+             const Vec3& viewPoint)
     : Type{LayerType::BOTTOM} {
-    GenerateVertices(a, b, c, h, n, transformMatrix, viewPoint, lighting);
+    GenerateVertices(a, b, c, h, n, transformMatrix, viewPoint);
 }
 
 const VertexVector& Layer::GetVertices() const {
@@ -75,8 +54,7 @@ void Layer::GenerateVertices(LenghtType a,
                              SizeType n,
                              LenghtType deltaH,
                              const Mat4x4& rotateMatrix,
-                             const Vec3& viewPoint,
-                             const Lighting& lighting) {
+                             const Vec3& viewPoint) {
     const auto DELTA_PHI = 2 * PI / n;
 
     auto generateVertex = [a, b, c, DELTA_PHI](auto&& i, auto&& h) {
@@ -117,8 +95,7 @@ void Layer::GenerateVertices(LenghtType a,
                              LenghtType h,
                              SizeType n,
                              const Mat4x4& rotateMatrix,
-                             const Vec3& viewPoint,
-                             const Lighting& lighting) {
+                             const Vec3& viewPoint) {
     const auto DELTA_PHI = 2 * PI / n;
 
     auto generateVertex = [a, b, c, DELTA_PHI](auto&& i, auto&& h) {
@@ -181,9 +158,7 @@ Ellipsoid::Ellipsoid(LenghtType a,
       SurfaceCount{surfaceCount},
       ViewPoint{viewPoint} {}
 
-LayerVector Ellipsoid::GenerateVertices(const Mat4x4& rotateMatrix,
-
-                                        const Lighting& lighting) const {
+LayerVector Ellipsoid::GenerateVertices(const Mat4x4& rotateMatrix) const {
     LayerVector layers;
     float start = -0.1f;
     float stop = 0.1f;
@@ -197,12 +172,11 @@ LayerVector Ellipsoid::GenerateVertices(const Mat4x4& rotateMatrix,
             std::launch::async,
             [](float a, float b, float c, float height, SizeType vertexCount,
                float delta, const Mat4x4& transformMatrix,
-               const Vec3& viewPoint, const Lighting& lighting) {
+               const Vec3& viewPoint) {
                 return Layer(a, b, c, height, vertexCount, delta,
-                             transformMatrix, viewPoint, lighting);
+                             transformMatrix, viewPoint);
             },
-            A, B, C, height, VertexCount, delta, rotateMatrix, ViewPoint,
-            lighting));
+            A, B, C, height, VertexCount, delta, rotateMatrix, ViewPoint));
     }
 
     for (auto&& future : futures) {
@@ -215,7 +189,7 @@ LayerVector Ellipsoid::GenerateVertices(const Mat4x4& rotateMatrix,
 
     for (auto h : {start, height}) {
         auto layer =
-            Layer(A, B, C, h, VertexCount, rotateMatrix, ViewPoint, lighting);
+            Layer(A, B, C, h, VertexCount, rotateMatrix, ViewPoint);
         if (layer.GetItemsCount() != 0) {
             layers.emplace_back(layer);
         }
